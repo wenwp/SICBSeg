@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+runs/
+runs-infer/
+data/
+*.pt
+*.pth
+*.ckpt
+
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

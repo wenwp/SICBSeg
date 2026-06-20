@@ -1,0 +1,86 @@
+# Transfer learning config for SICBSeg.
+
+transfer:
+  init_checkpoint: 'runs/train/best.pt'
+  train_encoder_adapters: true
+  train_decoder: true
+  drop_last: false
+
+model:
+  sam_checkpoint: '../segment-anything/checkpoints/sam_vit_l_0b3195.pth'
+  sam_type: 'vit_l'
+
+atl:
+  type: 'lora'
+  last_blocks: 12
+  rank: 8
+  lora_alpha: 16.0
+  dropout: 0.1
+
+decoder:
+  num_learnable_prompts: 8
+  use_iou_head: true
+
+data:
+  train_images_dir: ''
+  train_labels_dir: ''
+  val_images_dir: ''
+  val_labels_dir: ''
+  img_size: 1024
+  destroyed_idx: 3
+  destroyed_value_is_255: true
+  require_post_suffix: false
+
+  augmentation:
+    enabled: true
+    hflip: true
+    vflip: true
+    rotate90: true
+    color_jitter:
+      enabled: true
+      brightness: 0.2
+      contrast: 0.2
+      saturation: 0.1
+
+training:
+  batch_size: 2
+  workers: 4
+  epochs: 60
+  lr: 0.000005
+  weight_decay: 0.001
+  no_amp: false
+  grad_clip: 1.0
+
+  scheduler:
+    enabled: true
+    type: 'cosine'
+    T_max: 60
+    eta_min: 0.0000005
+
+  early_stopping:
+    enabled: true
+    monitor: 'val_loss'
+    patience: 12
+    min_delta: 0.0005
+
+loss:
+  pos_weight: 1.0
+  ohem_frac: 0.20
+  ohem_frac_min: 0.05
+  w_bce: 0.4
+  w_dice: 0.5
+  w_ohem: 0.1
+
+  dynamic_ohem:
+    enabled: true
+
+  auto_pos_weight:
+    enabled: true
+
+threshold_search:
+  enabled: true
+  interval: 5
+  metric: 'f1'
+
+output:
+  dir: 'runs/transfer'

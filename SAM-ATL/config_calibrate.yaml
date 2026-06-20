@@ -1,0 +1,29 @@
+
+model:
+  checkpoint: ''
+  sam_type: 'vit_l'
+  sam_checkpoint: '../segment-anything/checkpoints/sam_vit_l_0b3195.pth'
+
+atl:
+  type: 'lora'
+  last_blocks: 12
+  rank: 8
+  lora_alpha: 16.0
+  dropout: 0.1
+
+decoder:
+  num_learnable_prompts: 8
+  use_iou_head: true
+
+data:
+  val_images_dir: ''
+  val_labels_dir: ''
+  img_size: 1024
+  destroyed_idx: 3
+  destroyed_value_is_255: true
+  require_post_suffix: false
+  batch_size: 4
+  workers: 8
+
+output:
+  dir: 'runs/'

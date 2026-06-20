@@ -1,0 +1,87 @@
+
+data:
+  train_images_dir: 'data/train/images'
+  train_labels_dir: 'data/train/labels'
+  val_images_dir: 'data/val/images'
+  val_labels_dir: 'data/val/labels'
+  img_size: 1024
+  destroyed_idx: 3
+  destroyed_value_is_255: True
+  require_post_suffix: false
+
+  augmentation:
+    enabled: true
+    hflip: true
+    vflip: true
+    rotate90: true
+    color_jitter:
+      enabled: true
+      brightness: 0.25
+      contrast: 0.25
+      saturation: 0.1
+
+sam:
+  type: 'vit_l'
+  checkpoint: '../segment-anything/checkpoints/sam_vit_l_0b3195.pth'
+
+atl:
+  type: 'lora'
+  last_blocks: 12
+  rank: 8
+  lora_alpha: 16.0
+  dropout: 0.1
+
+decoder:
+  use_sam_decoder: true
+  num_learnable_prompts: 8
+  use_iou_head: true
+
+training:
+  batch_size: 4
+  workers: 8
+  epochs: 200
+  lr: 0.00001
+  weight_decay: 0.001
+  no_amp: false
+  grad_clip: 1.0
+
+  scheduler:
+    enabled: true
+    type: 'cosine'                  # cosine, plateau, step, none
+    T_max: 200
+    eta_min: 0.000001
+    # type: 'plateau' Additional configuration
+    # mode: 'min'
+    # factor: 0.5
+    # patience: 10
+    # min_lr: 0.000001
+
+  # Early Stopping
+  early_stopping:
+    enabled: true
+    monitor: 'val_loss'             # val_loss, val_ap, val_f1
+    patience: 20
+    min_delta: 0.001
+
+loss:
+  pos_weight: 1.0
+  ohem_frac: 0.25
+  ohem_frac_min: 0.05
+  w_bce: 0.4
+  w_dice: 0.5
+  w_ohem: 0.1
+
+  dynamic_ohem:
+    enabled: true
+
+  auto_pos_weight:
+    enabled: true
+
+threshold_search:
+  enabled: true
+  interval: 5
+  metric: 'f1'                      # 'f1', 'precision', 'iou', 'ap'
+
+output:
+  dir: 'runs/train'
+

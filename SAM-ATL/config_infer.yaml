@@ -1,0 +1,27 @@
+
+model:
+  checkpoint: ''
+  sam_type: 'vit_l'
+  sam_checkpoint: '../segment-anything/checkpoints/sam_vit_l_0b3195.pth'
+
+atl:
+  type: 'lora'
+  last_blocks: 12
+  rank: 8
+  lora_alpha: 16.0
+  dropout: 0.1
+
+decoder:
+  num_learnable_prompts: 8
+  use_iou_head: true
+
+inference:
+  img_size: 1024
+  single_image: null
+  images_dir: ''
+  output_dir: ''
+  threshold: 0.8
+  save_prob_map: false
+  save_binary_mask: true
+  save_overlay: false
+
